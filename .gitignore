@@ -1,0 +1,9 @@
+.idea/
+build/
+dist/
+ecars_pkg_mikedonovan2011.egg-info/
+Include/
+Lib/
+Scripts/
+pyvenv.cfg
+setup.py
