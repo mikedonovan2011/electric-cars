@@ -8,3 +8,5 @@ Lib/
 Scripts/
 pyvenv.cfg
 setup.py
+site.db
+*.pyc
