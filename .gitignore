@@ -10,3 +10,4 @@ pyvenv.cfg
 setup.py
 site.db
 *.pyc
+__pycache__/
