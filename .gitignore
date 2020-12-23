@@ -11,3 +11,4 @@ setup.py
 site.db
 *.pyc
 __pycache__/
+*.png
