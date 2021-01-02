@@ -26,8 +26,10 @@ def create_app(config_class=Config):
     from ecars.users.routes import users
     from ecars.posts.routes import posts
     from ecars.main.routes import main
+    from ecars.errors.handlers import errors
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(main)
+    app.register_blueprint(errors)
 
     return app
