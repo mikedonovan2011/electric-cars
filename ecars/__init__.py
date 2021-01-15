@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from ecars.config import Config
-
+from flask_bootstrap import Bootstrap
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -22,11 +22,13 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    Bootstrap(app)
 
     from ecars.users.routes import users
     from ecars.posts.routes import posts
     from ecars.main.routes import main
     from ecars.errors.handlers import errors
+
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(main)
