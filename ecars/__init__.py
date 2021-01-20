@@ -3,14 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
-from ecars.config import Config
 from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from ecars.config import Config
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
-login_manager.login_view = 'users.login'  # function name of our route
+login_manager.login_view = 'users.login'    # function name of our route for when login fails
+login_manager.refresh_view = 'users.login'  # or when they logged in from a cookie but we want a fresh login
 login_manager.login_message_category = 'info'
+login_manager.needs_refresh_message_category = 'info'
 mail = Mail()
 
 
@@ -23,6 +26,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
     Bootstrap(app)
+    moment = Moment(app)
 
     from ecars.users.routes import users
     from ecars.posts.routes import posts

@@ -1,18 +1,19 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from flask import render_template, url_for, flash, redirect, request, Blueprint, safe_join
 from ecars import db, bcrypt
 from ecars.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                RequestResetForm, ResetPasswordForm)
 from ecars.models import User, Post
-from flask_login import login_user, current_user, logout_user, login_required
+from flask_login import login_user, current_user, logout_user, fresh_login_required
 from ecars.users.utils import save_picture, send_reset_email
 
 users = Blueprint('users', __name__)
+
 
 @users.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
-    form = RegistrationForm()
+        form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')  # string not bytes
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
@@ -35,7 +36,7 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
+            flash('Login Unsuccessful. Please check email and password.', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 
@@ -46,7 +47,7 @@ def logout():
 
 
 @users.route("/account", methods=['GET', 'POST'])
-@login_required
+@fresh_login_required
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -61,7 +62,7 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    image_file = url_for('static', filename=safe_join('profile_pics', current_user.image_file))
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
