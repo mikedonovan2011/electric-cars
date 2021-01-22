@@ -7,18 +7,20 @@ from ecars import mail
 from flask_mail import Message
 
 
-def save_picture(form_picture):
+def save_picture(form_picture, dim=125):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(current_app.root_path, 'static', 'profile_pics', picture_fn)
 
-    output_size = (125, 125)
+    output_size = (dim, dim)
+
     try:
         im = Image.open(form_picture)
         im.thumbnail(output_size)
         im.save(picture_path)
-    except (IOError, FileNotFoundError, UnidentifiedImageError):
+    except (IOError, FileNotFoundError, UnidentifiedImageError) as e:
+        print(e)
         print("Cannot save image")
         return None
 

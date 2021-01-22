@@ -13,7 +13,7 @@ users = Blueprint('users', __name__)
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
-        form = RegistrationForm()
+    form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')  # string not bytes
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
@@ -53,11 +53,14 @@ def account():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+            if picture_file:
+                current_user.image_file = picture_file
+            else:
+                flash(f'Picture cannot be processed. Perhaps {form.picture.data.filename} is not an image.', 'info')
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('Your account had been updated!', 'success')
+        flash('Your account had been updated.', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
