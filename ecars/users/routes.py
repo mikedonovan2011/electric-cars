@@ -53,14 +53,14 @@ def account():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
-            if picture_file:
-                current_user.image_file = picture_file
-            else:
+            if picture_file is None:
                 flash(f'Picture cannot be processed. Perhaps {form.picture.data.filename} is not an image.', 'info')
+            else:
+                current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('Your account had been updated.', 'success')
+        flash('Your account was updated.', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
